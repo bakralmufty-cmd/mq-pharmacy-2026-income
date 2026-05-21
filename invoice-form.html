@@ -3,621 +3,788 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Invoice Form</title>
+<title>Invoice</title>
 <style>
-  :root { color-scheme: light; }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root{color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f2f2f7;color:#1c1c1e;min-height:100vh;padding-bottom:52px}
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #f2f2f7;
-    color: #1c1c1e;
-    min-height: 100vh;
-    padding-bottom: 40px;
-  }
+/* HEADER */
+.hdr{background:#fff;padding:14px 16px 12px;border-bottom:1px solid #e5e5ea;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.hdr h1{font-size:19px;font-weight:700;color:#007aff;margin-bottom:11px}
+.row2{display:flex;gap:10px}
+.fg{flex:1;display:flex;flex-direction:column;gap:3px}
+.fg label{font-size:11px;font-weight:600;color:#8e8e93;text-transform:uppercase;letter-spacing:.4px}
+.fg input{height:44px;border:1.5px solid #e5e5ea;border-radius:10px;padding:0 11px;font-size:15px;color:#1c1c1e;background:#f9f9fb;outline:none;width:100%;-webkit-appearance:none;appearance:none}
+.fg input:focus{border-color:#007aff;background:#fff}
 
-  /* ── TOP HEADER ── */
-  .top-header {
-    background: #fff;
-    padding: 16px 16px 12px;
-    border-bottom: 1px solid #e5e5ea;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .top-header h1 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #007aff;
-    margin-bottom: 12px;
-    letter-spacing: -0.3px;
-  }
-  .fields-row {
-    display: flex;
-    gap: 10px;
-  }
-  .field-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .field-group label {
-    font-size: 11px;
-    font-weight: 600;
-    color: #8e8e93;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-  }
-  .field-group input {
-    height: 42px;
-    border: 1.5px solid #e5e5ea;
-    border-radius: 10px;
-    padding: 0 12px;
-    font-size: 15px;
-    color: #1c1c1e;
-    background: #f9f9fb;
-    outline: none;
-    width: 100%;
-    -webkit-appearance: none;
-  }
-  .field-group input:focus {
-    border-color: #007aff;
-    background: #fff;
-  }
+/* SECTION */
+.sec{font-size:11px;font-weight:600;color:#8e8e93;text-transform:uppercase;letter-spacing:.5px;padding:13px 16px 5px}
 
-  /* ── SECTION LABEL ── */
-  .section-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #8e8e93;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 14px 16px 6px;
-  }
+/* SEARCH */
+.swrap{padding:0 16px 8px}
+.sbox{display:flex;align-items:center;background:#e9e9ef;border-radius:10px;padding:0 11px;gap:7px}
+.sbox svg{color:#8e8e93;flex-shrink:0}
+.sbox input{flex:1;height:40px;border:none;background:transparent;font-size:16px;color:#1c1c1e;outline:none}
+.sbox input::placeholder{color:#8e8e93}
+.clr{color:#8e8e93;cursor:pointer;font-size:17px;padding:4px;display:none;line-height:1}
 
-  /* ── SEARCH ── */
-  .search-wrap {
-    padding: 0 16px 8px;
-  }
-  .search-box {
-    display: flex;
-    align-items: center;
-    background: #e9e9ef;
-    border-radius: 10px;
-    padding: 0 12px;
-    gap: 8px;
-  }
-  .search-box svg { flex-shrink: 0; color: #8e8e93; }
-  .search-box input {
-    flex: 1;
-    height: 38px;
-    border: none;
-    background: transparent;
-    font-size: 16px;
-    color: #1c1c1e;
-    outline: none;
-  }
-  .search-box input::placeholder { color: #8e8e93; }
+/* BRAND CHIPS */
+.chips-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 16px 10px;display:flex;gap:7px;scrollbar-width:none}
+.chips-wrap::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;height:32px;padding:0 13px;border-radius:16px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:#e9e9ef;color:#1c1c1e;white-space:nowrap;-webkit-appearance:none;appearance:none}
+.chip.active{background:#007aff;color:#fff}
 
-  /* ── PRODUCT LIST ── */
-  .product-list {
-    background: #fff;
-    border-radius: 12px;
-    margin: 0 16px;
-    overflow: hidden;
-    border: 1px solid #e5e5ea;
-    max-height: 260px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .product-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 13px 16px;
-    border-bottom: 1px solid #f2f2f7;
-    cursor: pointer;
-    user-select: none;
-    transition: background 0.1s;
-    gap: 8px;
-  }
-  .product-item:last-child { border-bottom: none; }
-  .product-item:active { background: #f2f2f7; }
-  .product-item.already-added { opacity: 0.4; pointer-events: none; }
-  .product-name {
-    font-size: 15px;
-    color: #1c1c1e;
-    line-height: 1.3;
-    flex: 1;
-  }
-  .product-price-tag {
-    font-size: 13px;
-    color: #34c759;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .product-price-tag.no-price {
-    color: #ff9500;
-    font-size: 12px;
-  }
-  .add-btn {
-    width: 28px;
-    height: 28px;
-    background: #007aff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .add-btn svg { color: #fff; }
-  .no-results {
-    padding: 24px 16px;
-    text-align: center;
-    color: #8e8e93;
-    font-size: 15px;
-  }
+/* PRODUCT LIST */
+.plist{background:#fff;border-radius:12px;margin:0 16px;overflow:hidden;border:1px solid #e5e5ea;max-height:240px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.pitem{display:flex;align-items:center;padding:11px 13px;border-bottom:1px solid #f2f2f7;cursor:pointer;gap:8px;min-height:50px}
+.pitem:last-child{border-bottom:none}
+.pitem:active{background:#f0f4ff}
+.pitem.ic{opacity:.35;pointer-events:none}
+.pname{font-size:14px;color:#1c1c1e;line-height:1.3;flex:1}
+.ptag{font-size:12px;font-weight:600;white-space:nowrap}
+.ptag.has{color:#34c759}
+.ptag.no{color:#ff9500}
+.addcircle{width:28px;height:28px;background:#007aff;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nores{padding:22px 16px;text-align:center;color:#8e8e93;font-size:14px}
 
-  /* ── CART ── */
-  .cart-list {
-    background: #fff;
-    border-radius: 12px;
-    margin: 0 16px;
-    overflow: hidden;
-    border: 1px solid #e5e5ea;
-  }
-  .cart-item {
-    padding: 12px 16px;
-    border-bottom: 1px solid #f2f2f7;
-  }
-  .cart-item:last-child { border-bottom: none; }
-  .cart-item-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-  .cart-item-name {
-    font-size: 15px;
-    font-weight: 500;
-    color: #1c1c1e;
-    line-height: 1.3;
-    flex: 1;
-  }
-  .remove-btn {
-    width: 26px;
-    height: 26px;
-    background: #ff3b30;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    cursor: pointer;
-    border: none;
-    margin-top: 1px;
-  }
-  .remove-btn svg { color: #fff; }
-  .cart-item-controls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  .control-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .control-group label {
-    font-size: 11px;
-    font-weight: 600;
-    color: #8e8e93;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-  }
-  .qty-input, .price-input {
-    height: 40px;
-    border: 1.5px solid #e5e5ea;
-    border-radius: 9px;
-    padding: 0 10px;
-    font-size: 16px;
-    color: #1c1c1e;
-    background: #f9f9fb;
-    outline: none;
-    width: 100%;
-    -webkit-appearance: none;
-  }
-  .qty-input:focus, .price-input:focus {
-    border-color: #007aff;
-    background: #fff;
-  }
-  .price-input.missing {
-    border-color: #ff9500;
-    background: #fff9f0;
-  }
-  .price-input.missing:focus { border-color: #ff9500; }
-  .item-subtotal {
-    font-size: 13px;
-    color: #8e8e93;
-    text-align: right;
-    margin-top: 6px;
-  }
-  .item-subtotal strong { color: #1c1c1e; }
-  .missing-label {
-    font-size: 11px;
-    color: #ff9500;
-    margin-top: 2px;
-  }
+/* CART */
+.clist{background:#fff;border-radius:12px;margin:0 16px;overflow:hidden;border:1px solid #e5e5ea}
+.cempty{padding:26px 16px;text-align:center;color:#8e8e93;font-size:14px}
+.cempty-icon{font-size:28px;margin-bottom:5px}
+.citem{padding:11px 13px;border-bottom:1px solid #f2f2f7}
+.citem:last-child{border-bottom:none}
+.ctop{display:flex;align-items:flex-start;gap:8px;margin-bottom:9px}
+.cname{font-size:14px;font-weight:500;color:#1c1c1e;line-height:1.3;flex:1}
+.rmbtn{width:26px;height:26px;background:#ff3b30;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;flex-shrink:0;margin-top:1px}
+.ctrls{display:flex;gap:9px}
+.ctrl{flex:1;display:flex;flex-direction:column;gap:3px}
+.ctrl label{font-size:11px;font-weight:600;color:#8e8e93;text-transform:uppercase;letter-spacing:.4px}
+.ctrl input{height:42px;border:1.5px solid #e5e5ea;border-radius:10px;padding:0 10px;font-size:16px;color:#1c1c1e;background:#f9f9fb;outline:none;width:100%;-webkit-appearance:none;appearance:none}
+.ctrl input:focus{border-color:#007aff;background:#fff}
+.ctrl input.np{border-color:#ff9500;background:#fff9f0}
+.nlbl{font-size:11px;color:#ff9500;margin-top:2px}
+.sub{font-size:12px;color:#8e8e93;text-align:right;margin-top:6px}
+.sub b{color:#1c1c1e}
 
-  .cart-empty {
-    padding: 28px 16px;
-    text-align: center;
-    color: #8e8e93;
-    font-size: 15px;
-  }
-  .cart-empty span { display: block; font-size: 28px; margin-bottom: 6px; }
+/* TOTAL */
+.tbar{background:#fff;border-radius:12px;margin:0 16px;padding:13px 15px;border:1px solid #e5e5ea;display:flex;justify-content:space-between;align-items:center}
+.tlbl{font-size:15px;font-weight:600}
+.tamt{font-size:21px;font-weight:700;color:#007aff}
+.mnote{font-size:12px;color:#ff9500;padding:4px 16px 0}
 
-  /* ── TOTAL BAR ── */
-  .total-bar {
-    background: #fff;
-    border-radius: 12px;
-    margin: 0 16px;
-    padding: 14px 16px;
-    border: 1px solid #e5e5ea;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .total-label {
-    font-size: 15px;
-    font-weight: 600;
-    color: #1c1c1e;
-  }
-  .total-amount {
-    font-size: 20px;
-    font-weight: 700;
-    color: #007aff;
-  }
-  .missing-prices-note {
-    font-size: 12px;
-    color: #ff9500;
-    padding: 4px 16px 0;
-  }
+/* EXPORT BTN */
+.expbtn{display:block;width:calc(100% - 32px);margin:0 16px;height:52px;background:#007aff;color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:600;cursor:pointer;-webkit-appearance:none;appearance:none}
+.expbtn:active{opacity:.82}
 
-  /* ── EXPORT BUTTON ── */
-  .export-btn {
-    display: block;
-    width: calc(100% - 32px);
-    margin: 0 16px;
-    height: 52px;
-    background: #007aff;
-    color: #fff;
-    border: none;
-    border-radius: 14px;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    -webkit-appearance: none;
-    transition: opacity 0.15s;
-  }
-  .export-btn:active { opacity: 0.8; }
-  .export-btn:disabled {
-    background: #c7c7cc;
-    cursor: not-allowed;
-  }
+/* MODAL */
+.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-end;justify-content:center}
+.moverlay.open{display:flex}
+.modal{background:#fff;border-radius:20px 20px 0 0;width:100%;max-height:72vh;padding:18px 15px 36px;display:flex;flex-direction:column;gap:11px}
+.modal h2{font-size:16px;font-weight:700}
+.modal p{font-size:13px;color:#8e8e93;line-height:1.4}
+.csvbox{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#f2f2f7;border-radius:10px;padding:11px;font-size:11px;font-family:monospace;white-space:pre;color:#1c1c1e;min-height:110px;max-height:230px;-webkit-user-select:all;user-select:all}
+.mbtns{display:flex;gap:9px}
+.copybtn{flex:1;height:48px;background:#007aff;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer}
+.copybtn:active{opacity:.8}
+.copybtn.done{background:#34c759}
+.closebtn{height:48px;padding:0 17px;background:#e9e9ef;color:#1c1c1e;border:none;border-radius:12px;font-size:16px;font-weight:500;cursor:pointer}
 
-  .gap { height: 12px; }
-  .gap-sm { height: 8px; }
+.gap{height:11px}
 </style>
 </head>
 <body>
 
-<!-- STICKY HEADER -->
-<div class="top-header">
+<div class="hdr">
   <h1>🧾 Invoice</h1>
-  <div class="fields-row">
-    <div class="field-group">
-      <label>Customer Name</label>
-      <input type="text" id="customerName" placeholder="Enter name" autocomplete="off" autocorrect="off">
-    </div>
-    <div class="field-group">
-      <label>Date</label>
-      <input type="date" id="invoiceDate">
-    </div>
+  <div class="row2">
+    <div class="fg"><label>Customer Name</label>
+      <input type="text" id="cname" placeholder="Enter name" autocomplete="off" autocorrect="off" autocapitalize="words"></div>
+    <div class="fg"><label>Date</label>
+      <input type="date" id="idate"></div>
   </div>
 </div>
 
-<!-- PRODUCT SEARCH -->
-<div class="section-label">Add Products</div>
-<div class="search-wrap">
-  <div class="search-box">
-    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-    </svg>
-    <input type="search" id="searchInput" placeholder="Search products…" autocomplete="off" autocorrect="off" autocapitalize="off">
+<div class="sec">Add Products</div>
+<div class="swrap">
+  <div class="sbox">
+    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="search" id="srch" placeholder="Search products…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <span class="clr" id="clrbtn">&#x2715;</span>
   </div>
 </div>
-<div class="product-list" id="productList"></div>
+<div class="chips-wrap" id="chips"></div>
+<div class="plist" id="plist"></div>
 
 <div class="gap"></div>
+<div class="sec">Invoice Items</div>
+<div class="clist" id="clist"><div class="cempty"><div class="cempty-icon">🛒</div>Tap a product above to add it</div></div>
 
-<!-- CART -->
-<div class="section-label">Invoice Items</div>
-<div class="cart-list" id="cartList">
-  <div class="cart-empty"><span>🛒</span>Tap a product above to add it</div>
+<div class="gap"></div>
+<div class="tbar"><span class="tlbl">Total</span><span class="tamt" id="tamt">IQD 0</span></div>
+<div class="mnote" id="mnote" style="display:none">⚠️ Some prices are missing — total may be incomplete</div>
+
+<div class="gap"></div>
+<button class="expbtn" id="expbtn">Export CSV</button>
+<div class="gap"></div>
+
+<!-- CSV MODAL -->
+<div class="moverlay" id="moverlay">
+  <div class="modal">
+    <h2>📋 CSV Ready</h2>
+    <p>Tap <strong>Copy</strong> then paste into WhatsApp, Notes, or email. Or long-press to Select All.</p>
+    <div class="csvbox" id="csvbox"></div>
+    <div class="mbtns">
+      <button class="copybtn" id="copybtn">Copy CSV</button>
+      <button class="closebtn" id="closebtn">Close</button>
+    </div>
+  </div>
 </div>
-
-<div class="gap"></div>
-
-<!-- TOTAL -->
-<div class="total-bar">
-  <span class="total-label">Total</span>
-  <span class="total-amount" id="totalAmount">IQD 0</span>
-</div>
-<div id="missingNote" class="missing-prices-note" style="display:none">
-  ⚠️ Some items have no price — total may be incomplete
-</div>
-
-<div class="gap"></div>
-
-<!-- EXPORT -->
-<button class="export-btn" id="exportBtn" onclick="exportCSV()">Export CSV</button>
-
-<div class="gap"></div>
 
 <script>
-const PRODUCTS = [
-  { name: "5-HTP 100 mg Now 60 caps",              price: 18000 },
-  { name: "5-HTP 50 mg Now 30 caps",               price: 12300 },
-  { name: "B-1 100 mg Now",                        price: 17500 },
-  { name: "B-12 Now",                              price: 13500 },
-  { name: "Berberine 90 SG",                       price: null  },
-  { name: "Berberine Now 90 SG",                   price: 41500 },
-  { name: "Biotin 10,000 Now",                     price: null  },
-  { name: "C-1000 now",                            price: 13000 },
-  { name: "C-1000 Now Buffered complex 90 tablets",price: 27500 },
-  { name: "Glutathione 500 mg Now",                price: null  },
-  { name: "GTF Chromium 200 mcg 100 tabs",         price: 14500 },
-  { name: "L-Arginine 1000 mg Now",                price: 33000 },
-  { name: "L-Arginine 500 Now",                    price: 17500 },
-  { name: "L-Carnitine 1000 mg Now",               price: 28500 },
-  { name: "L-Lysine Now",                          price: null  },
-  { name: "Magnesium Glycinate 60 caps Now",       price: 23500 },
-  { name: "Magnesium Malate 1000 Now 100 tabs",    price: 37500 },
-  { name: "Mega D-3 & MK-7 Now",                  price: 25000 },
-  { name: "Melatonin 3mg Now 60 caps",             price: 11000 },
-  { name: "MK7 K2 Now 100mcg 60 caps",             price: 22000 },
-  { name: "Potassium Gluconate 99 mg Now",         price: null  },
-  { name: "Probiotic-10 25 Billion Now",           price: 21000 },
-  { name: "Selenium 100 mcg Now",                  price: null  },
-  { name: "Selenium 200 Now",                      price: 14600 },
-  { name: "Super Enzymes Now",                     price: 24700 },
-  { name: "Super Primrose 1300 mg Now",            price: 24000 },
-  { name: "Tri-Chromium Now",                      price: null  },
-  { name: "Turmeric Curcumin Now",                 price: 29500 },
-  { name: "Vitamin D-3 & K-2 now",                price: 18000 },
-  { name: "Vitamin K-2 Now",                      price: null  },
-  { name: "Zinc 50 mg Now",                        price: 13000 },
-  { name: "Zinc Picolinate 50 mg",                 price: null  },
-  { name: "Zinc Picolinate Now",                   price: 11000 },
+// ─── PRODUCT LIST (merged, deduplicated, prices from sheet 1 preserved) ───
+var P = [
+  // NOW
+  {n:"5-HTP 100 mg Now 60 caps",p:18000},
+  {n:"5-HTP 50 mg Now 30 caps",p:12300},
+  {n:"A & D 10,000/400 IU now",p:null},
+  {n:"ADAM 60 tabs now",p:null},
+  {n:"Alpha Lipoic Now 60 cap",p:null},
+  {n:"Apple Cider Now 180 caps",p:null},
+  {n:"Ashwaghanda now",p:null},
+  {n:"B-1 100 mg Now",p:17500},
+  {n:"B-1 Now",p:null},
+  {n:"B-12 Now",p:13500},
+  {n:"B-2 100 mg Now",p:null},
+  {n:"B-50 now",p:null},
+  {n:"B-6 Now",p:null},
+  {n:"Berberine Now",p:null},
+  {n:"Berberine Now 60 SG",p:null},
+  {n:"Berberine Now 90 SG",p:41500},
+  {n:"Biotin 10,000 Now",p:null},
+  {n:"Biotin 5000 Now",p:null},
+  {n:"Boron 3 now 100 caps",p:null},
+  {n:"C-1000 now",p:13000},
+  {n:"C-1000 now 100 tabs",p:null},
+  {n:"C-1000 Now 30 Caps.",p:null},
+  {n:"C-1000 Now Buffered complex 90 tablets",p:27500},
+  {n:"C-500 Now 100 tab",p:null},
+  {n:"Choline inositol now 100 caps",p:null},
+  {n:"Coconut oil now",p:null},
+  {n:"Cod Liver Oil Now",p:null},
+  {n:"CoQ10 100 now 30 caps",p:null},
+  {n:"CoQ10 200 now 60 caps",p:null},
+  {n:"Dim 200 now 90 Caps",p:null},
+  {n:"Echinacea Extract Now",p:null},
+  {n:"Energy Now",p:null},
+  {n:"evening primrose oil 500 mg now",p:null},
+  {n:"Fungreek 500 100 caps now",p:null},
+  {n:"GABA 500 NOW Now 100 caps",p:null},
+  {n:"Garcinia 1000 mg Now",p:null},
+  {n:"Ginseng & Royal Jelly now 90 caps",p:null},
+  {n:"Glutathione 500 mg Now",p:null},
+  {n:"Grapseed Oil Now",p:null},
+  {n:"GTF Chromium 200 mcg 100 tabs",p:14500},
+  {n:"Horny Goat Weed 750mg Now",p:null},
+  {n:"Inositol 500 now 100 caps",p:null},
+  {n:"Kelp 325 Now 250 caps",p:null},
+  {n:"Kidney Cleanse 90 caps now",p:null},
+  {n:"L-Arginine 1000 mg Now",p:33000},
+  {n:"L-Arginine 500 Now",p:17500},
+  {n:"L-Carnitine 1000 mg Now",p:28500},
+  {n:"l-Carnitine 500 now 60 caps",p:null},
+  {n:"L-Lysine Now",p:null},
+  {n:"L-Tryptophan 500 Now",p:null},
+  {n:"Lavender oil now",p:null},
+  {n:"Liquid chlorophyll now",p:null},
+  {n:"Liquid Melatonin Now",p:null},
+  {n:"Liver Caps Now",p:null},
+  {n:"Lutein & Zexanthin now",p:null},
+  {n:"Maca 750 Now 90 caps",p:null},
+  {n:"Maca Now 500",p:null},
+  {n:"Magnesium Citrate Now",p:null},
+  {n:"Magnesium Glycinate 60 caps Now",p:23500},
+  {n:"Magnesium Glycinate Now 180 tab",p:null},
+  {n:"Magnesium Malate 1000 Now 100 tabs",p:37500},
+  {n:"Magnesium oxide now",p:null},
+  {n:"Magtein Now",p:null},
+  {n:"Mega D-3 & MK-7 Now",p:25000},
+  {n:"Melatonin 10 mg Now",p:null},
+  {n:"Melatonin 20mg now",p:null},
+  {n:"Melatonin 3mg Now 60 caps",p:11000},
+  {n:"Melatonin 5 mg Now",p:null},
+  {n:"Methyl B-12 now",p:null},
+  {n:"Milk Thistle 150 Now 60 caps",p:null},
+  {n:"Milk thistle 150mg 120 caps now",p:null},
+  {n:"Milk Thistle Extract 300 mg now",p:null},
+  {n:"MK7 K2 Now 100mcg 60 caps",p:22000},
+  {n:"MSM Now 120 caps 1000mg",p:null},
+  {n:"NAC 600 mg Now",p:null},
+  {n:"Niacin 500mg Now 100 tab",p:null},
+  {n:"Niacinamide Now",p:null},
+  {n:"Omega-3 100 cap now",p:null},
+  {n:"Omega-3 200 cap now",p:null},
+  {n:"Omega-3 30 cap now",p:null},
+  {n:"Orange oil Now",p:null},
+  {n:"Potassium Citrate Now 180 caps",p:null},
+  {n:"Potassium Gluconate 99 mg Now",p:null},
+  {n:"Probiotic-10 25 Billion Now",p:21000},
+  {n:"Prostate support now",p:null},
+  {n:"Saw Palmetto 550 Now",p:null},
+  {n:"Saw Palmetto extract 320 mg Now",p:null},
+  {n:"Selenium 100 mcg Now",p:null},
+  {n:"Selenium 200 Now",p:14600},
+  {n:"Serrapeptase Now",p:null},
+  {n:"Spirulina 1000 120tabs now",p:null},
+  {n:"Spirulina 500 100tabs now",p:null},
+  {n:"Super Enzymes Now",p:24700},
+  {n:"Super Primrose 1300 mg Now",p:24000},
+  {n:"TestoJack 100 Now",p:null},
+  {n:"TestoJack 200 Now",p:null},
+  {n:"TestoJack 300 Now",p:null},
+  {n:"Tri-Chromium Now",p:null},
+  {n:"Turmeric Curcumin Now",p:29500},
+  {n:"Vitamin A 10,000 IU now",p:null},
+  {n:"Vitamin D-3 & K-2 now",p:18000},
+  {n:"Vitamin D-3 10,000 IU Now",p:null},
+  {n:"Vitamin D-3 2000 Now",p:null},
+  {n:"Vitamin D-3 5,000 IU Now",p:null},
+  {n:"Vitamin D-3 50,000 IU Now",p:null},
+  {n:"Vitamin K-2 Now",p:null},
+  {n:"Zinc 50 mg Now",p:13000},
+  {n:"Zinc 50mg 250 tab now",p:null},
+  {n:"Zinc Glycinate Now",p:null},
+  {n:"Zinc Picolinate Now",p:11000},
+  // Puritans
+  {n:"Alpha lipoic acid 60caps 600 Puritans",p:null},
+  {n:"B-12 500 mcg Puritans 100",p:null},
+  {n:"B-2 100 mg Puritans 100",p:null},
+  {n:"B-6 puritans",p:null},
+  {n:"B-6 Puritans 100 tabs",p:null},
+  {n:"B-Complex Puritans",p:null},
+  {n:"Biotin 5000 Puritans 60caps",p:null},
+  {n:"Calcium d3 Puritans 60 caps",p:null},
+  {n:"Chromium 500 puritans",p:null},
+  {n:"Chromium Pico 500 mcg Puritans",p:null},
+  {n:"Chromium Pico 800 mcg Puritans",p:null},
+  {n:"CO Q-200 Puritans 60 SG",p:null},
+  {n:"CO Q-400mg Puritans 30 SG",p:null},
+  {n:"Creatine Extreme 1000 Puritans 120 caps",p:null},
+  {n:"D3 2000 Puritans 100 SG",p:null},
+  {n:"D3 5000 Puritans",p:null},
+  {n:"Diabetic support Puritans 60 caps",p:null},
+  {n:"Ginsing puritans",p:null},
+  {n:"GTF Chromium Puritans",p:null},
+  {n:"K-2 Puritans 30 caps",p:null},
+  {n:"L-arginine 1000mg Puritans 100 caps",p:null},
+  {n:"L-arginine 500mg Puritans 100 caps",p:null},
+  {n:"L-Carntine 500 Puritans 60 caps",p:null},
+  {n:"Liver complex Puritans",p:null},
+  {n:"Magnesium 250 Puritans",p:null},
+  {n:"Magnesium 500mg Puritans",p:null},
+  {n:"Magnesium Citrate Puritans",p:null},
+  {n:"Melatonin Puritans 10mg",p:null},
+  {n:"Melatonin 5 puritans",p:null},
+  {n:"Melatonine 10mg Puritans 120 tabs",p:null},
+  {n:"Melatonine 3mg Puritans 120 tabs",p:null},
+  {n:"Melatonine 5mg Puritans 120 tabs",p:null},
+  {n:"Melatonine Bi layer Puritans 60 tabs",p:null},
+  {n:"Milk thisle 1000mg Puritans 90 soft gels",p:null},
+  {n:"Milk thisle 175mg Puritans 100 caps",p:null},
+  {n:"Milk thisle Puritans",p:null},
+  {n:"Multi enzyme Puritans",p:null},
+  {n:"Niacin 100mg Puritans 100 tabs",p:null},
+  {n:"Potassium Puritans",p:null},
+  {n:"Probiotic Puritans",p:null},
+  {n:"Selenium 200 mcg Puritans 100tabs",p:null},
+  {n:"Triple Magnesium 60 caps Puritans",p:null},
+  {n:"Triple Omega 3,6,9 Puritans 120 SG",p:null},
+  {n:"Vitamin D-3 & K-2 Puritans",p:null},
+  {n:"Vitamin E Puritans",p:null},
+  {n:"Vitamin K puritans",p:null},
+  {n:"Zinc 25 Puritans",p:null},
+  {n:"Zinc 50 Puritans",p:null},
+  {n:"Zinc pico 25mg Puritans",p:null},
+  // Mason
+  {n:"Alpha lipoic acid Mason 600mg 30 caps",p:null},
+  {n:"Apple cider 100 tabs Mason",p:null},
+  {n:"Apple cider mason",p:null},
+  {n:"Ashwagandha Mason",p:null},
+  {n:"B-1 Mason",p:null},
+  {n:"B-12 Mason",p:null},
+  {n:"B-6 Mason",p:null},
+  {n:"Biotin 5000 50 SG Mason",p:null},
+  {n:"Blood Sugar Balance 30 tabs mason",p:null},
+  {n:"C-500 Mason",p:null},
+  {n:"Calcium 600 Mason",p:null},
+  {n:"Calcium D3 100 tabs Mason",p:null},
+  {n:"Chromium Pico 100 tabs Mason 200 mcg",p:null},
+  {n:"DHEA Mason 50mg 30 SG",p:null},
+  {n:"Digestive Enzymes Mason 90 tabs",p:null},
+  {n:"Evening Primrose Oil 60 SG Mason",p:null},
+  {n:"K2 100 tabs Mason",p:null},
+  {n:"K2 Mason",p:null},
+  {n:"L-arginine 500 Mason",p:null},
+  {n:"Magnesium Gluconate 550 mg 100 tabs Mason",p:null},
+  {n:"Magnesium Glycinate Mason 60 caps",p:null},
+  {n:"Melatonin 10 Mason 60 caps",p:null},
+  {n:"Melatonin 3mg Mason 60 tabs",p:null},
+  {n:"Melatonin 5 Mason 60 tabs",p:null},
+  {n:"Milk thisle 500 Mason 60 caps",p:null},
+  {n:"Milk Thistle Mason",p:null},
+  {n:"Omega Fish Oil 30 SG Mason",p:null},
+  {n:"Potassium Gluconate 595mg 100 tabs Mason",p:null},
+  {n:"Probiotic Mason",p:null},
+  {n:"Selenium 200mcg 60 tabs Mason",p:null},
+  {n:"Vitamin A 100 SG Masnon",p:null},
+  {n:"Zinc 50mg 100 tabs Mason",p:null},
+  // Swanson
+  {n:"Apple cider Swanson",p:null},
+  {n:"B-6 Swanson 100 caps",p:null},
+  {n:"B12 Swanson 100 caps",p:null},
+  {n:"Biotin 5000 Swanson",p:null},
+  {n:"Biotin 5000 Swanson 30caps",p:null},
+  {n:"Biotin Swanson",p:null},
+  {n:"Boron Swanson",p:null},
+  {n:"Chromium Pico Swanson",p:null},
+  {n:"Copper Swanson",p:null},
+  {n:"D3 K2 Swanson",p:null},
+  {n:"D3 Swanon 1000",p:null},
+  {n:"Digestive enzyme Swanson",p:null},
+  {n:"Evening primrose oil Swanson",p:null},
+  {n:"Hair Skin and nails Swanson",p:null},
+  {n:"L-carnitine 500 Swanson 30tabs",p:null},
+  {n:"Magnesium Citrate Swanson Powder",p:null},
+  {n:"Magnesium Glycinate Swanson",p:null},
+  {n:"Magnesium Malate swanson 60tab",p:null},
+  {n:"Magnesium orotate Swanson",p:null},
+  {n:"Melatonin 10 Swanson 60 caps",p:null},
+  {n:"Melatonin 3mg Swanson 60 caps",p:null},
+  {n:"Melatonin 5 Swanson 60 caps",p:null},
+  {n:"Milk thisle 500mg Swanson 30 caps",p:null},
+  {n:"Milk thisle 500mg Swanson 100 caps",p:null},
+  {n:"NAC Swanson",p:null},
+  {n:"Potassium Citrate Swanson",p:null},
+  {n:"Potassium orotate Swanson",p:null},
+  {n:"Probiotic Swanson",p:null},
+  {n:"Riboflavin Swanson",p:null},
+  {n:"Selenium Complex Swanson",p:null},
+  {n:"Selenium Swanson",p:null},
+  {n:"Triple Magnesium Swanson",p:null},
+  {n:"Turmeric Swanson",p:null},
+  {n:"Zinc and C Swanson",p:null},
+  {n:"Zinc Citrate Swanson",p:null},
+  {n:"Zinc Picolinate Swanson",p:null},
+  // Nutricost
+  {n:"5-HTP 100mg Nutricost 30 caps",p:null},
+  {n:"5-HTP Swanson 60 caps",p:null},
+  {n:"Alpha Lipoic 60 caps nutricost",p:null},
+  {n:"B-2 Nutricost",p:null},
+  {n:"Biotin 10000 nutricost",p:null},
+  {n:"Caffiene nutricost",p:null},
+  {n:"L-Carnitine 500 nutricost 30 caps",p:null},
+  {n:"l-Carnitine 1000 nutricost",p:null},
+  {n:"Magnesium 420mg nutricost",p:null},
+  {n:"Magnesium citrate Nutricost",p:null},
+  {n:"Magnesium Complex 30 caps nutricost",p:null},
+  {n:"Magnesium Glycinate nutricost",p:null},
+  {n:"Magnesium Malate Nutricost",p:null},
+  {n:"Magnesium Orotate Nutricost",p:null},
+  {n:"Milk thisle Nutricost",p:null},
+  {n:"MK7 nutricost",p:null},
+  {n:"NAC 30 caps nutricost",p:null},
+  {n:"Potassium Nutricost 30 caps",p:null},
+  {n:"Zinc picolinate Nutricost",p:null},
+  // Century
+  {n:"Acidphilus Century",p:null},
+  {n:"Apple cider Century",p:null},
+  {n:"Arhtriflex Century",p:null},
+  {n:"B 50 century",p:null},
+  {n:"B-1 Century",p:null},
+  {n:"B-12 Century",p:null},
+  {n:"B12 century 500mg",p:null},
+  {n:"B-6 Century",p:null},
+  {n:"Berberine 90 SG",p:null},
+  {n:"Biotin 10,000 Century",p:null},
+  {n:"Biotin 5000 Century",p:null},
+  {n:"Calcium Magnesium Zinc Century",p:null},
+  {n:"Caltrate blue cenutry",p:null},
+  {n:"Caltrate Pink century",p:null},
+  {n:"Chromium Century 100 tabs",p:null},
+  {n:"Co Q-10 400 Century 30 caps",p:null},
+  {n:"Collagen C Century",p:null},
+  {n:"Colon Cleanse century",p:null},
+  {n:"Cranberry Centruy 60 tabs",p:null},
+  {n:"DHEA Century",p:null},
+  {n:"Digestive enzymes century",p:null},
+  {n:"Estro Support century",p:null},
+  {n:"Evening primrose oil century",p:null},
+  {n:"Healthy Eyes 60 tabs century",p:null},
+  {n:"Iron Century",p:null},
+  {n:"L-Arginine Century",p:null},
+  {n:"Lueitin 10 mg century",p:null},
+  {n:"Magnesium Cenutry",p:null},
+  {n:"Melatonin 10 century",p:null},
+  {n:"melatonin 5 Century",p:null},
+  {n:"Milk Thistle Century 60",p:null},
+  {n:"Niacin century 110 tab",p:null},
+  {n:"Niacinamide Century",p:null},
+  {n:"Potassium Century",p:null},
+  {n:"Prostate health century",p:null},
+  {n:"Selenium 200mcg Century",p:null},
+  {n:"Triple omega 3,6,9 Century",p:null},
+  {n:"Turmeric Century",p:null},
+  {n:"Vitamin A 3000 mcg century",p:null},
+  {n:"Vitamin D3 1000 century",p:null},
+  {n:"Zinc Century",p:null},
+  // Natrol
+  {n:"Alpha Lipoic Natrol",p:null},
+  {n:"B12 Natrol",p:null},
+  {n:"Biotin 10 natrol",p:null},
+  {n:"Biotin 10,000 natrol",p:null},
+  {n:"Cinnamon Biotin Natrol",p:null},
+  {n:"D3 10,000 Natrol",p:null},
+  {n:"DHEA natrol",p:null},
+  {n:"Liquid Melatonin Natrol",p:null},
+  {n:"Magnesium Natrol 250",p:null},
+  {n:"Melatonin 10 Natrol",p:null},
+  {n:"Melatonin 3mg Natrol",p:null},
+  {n:"Melatonin 5 Natrol",p:null},
+  {n:"Memory complex Natrol",p:null},
+  {n:"Milk thistle 525 natrol",p:null},
+  // Natures Truth
+  {n:"Apple cider 1200 natures truth",p:null},
+  {n:"Berberine Nautres truth",p:null},
+  {n:"Caltrate pink natures truth",p:null},
+  {n:"Citicholine 1000 mg Natures Truth",p:null},
+  {n:"Horny Goat Weed Natures Truth",p:null},
+  {n:"Longjack tongkat Ali Natures Truth",p:null},
+  {n:"Magnesium Glycinate Natures Truth",p:null},
+  {n:"Magnesium plus ashwa natures truth",p:null},
+  {n:"Moringa Natures Truth",p:null},
+  {n:"Potassium Gluconate natures truth",p:null},
+  {n:"Selenium 200 natures truth 100 tabs",p:null},
+  {n:"Selenium Natures truth",p:null},
+  {n:"Valerian Root Natures Truth",p:null},
+  {n:"Vitamin E natures truth",p:null},
+  // Natures Bounty
+  {n:"Melatoin 5 Natures Bounty",p:null},
+  {n:"Potassium Natures Bounty",p:null},
+  {n:"Probiotic Natures Bounty",p:null},
+  {n:"Selenium Natures Bounty",p:null},
+  // Centrum
+  {n:"Centrum Adult +50 Multi 90 Gummies 1",p:null},
+  {n:"Centrum Adult 200 tab",p:null},
+  {n:"Centrum Adult 60 tab",p:null},
+  {n:"Centrum Adult Multi 110 Gummies",p:null},
+  {n:"Centrum Men +50 Multi 80 Gummies",p:null},
+  {n:"Centrum Men 120 tab",p:null},
+  {n:"Centrum Men 65 Tablets",p:null},
+  {n:"Centrum Men Multi 100 Gummies",p:null},
+  {n:"Centrum Silver Men 40 tabs.",p:null},
+  {n:"Centrum Silver Men 65 tabs.",p:null},
+  {n:"Centrum Silver Women 40 tabs.",p:null},
+  {n:"Centrum Silver Women 65 tab",p:null},
+  {n:"Centrum Women +50 Multi 80 Gummies",p:null},
+  {n:"Centrum Women 120 tab",p:null},
+  {n:"Centrum Women 50+ 65 tab",p:null},
+  {n:"Centrum Women 65 Tablets",p:null},
+  {n:"Centrum Women Multi 100 Gummies",p:null},
+  // Doctor's Best
+  {n:"L-carnitine 500mg Doctors best",p:null},
+  {n:"Magnesium Glycinate 120 tab docotrs best",p:null},
+  {n:"Nac doctures best 60 caps",p:null},
+  // Sundance
+  {n:"Ashwaganda sundance",p:null},
+  {n:"Zinc gluconate Sundance 90tabs",p:null},
+  // Other
+  {n:"Almond Oil",p:null},
+  {n:"Alpha Lipoic acid amazing formulas 60 caps",p:null},
+  {n:"Apo clopi 75",p:null},
+  {n:"Artilan",p:null},
+  {n:"Aspirin 81 chewable",p:null},
+  {n:"Aspirin 81 Health a2z",p:null},
+  {n:"B Complex Nutrihealth",p:null},
+  {n:"B-complex sundown",p:null},
+  {n:"Berberine Nautres truth",p:null},
+  {n:"Betaine HCL",p:null},
+  {n:"Biotin 100,000",p:null},
+  {n:"Brewer's Yeast",p:null},
+  {n:"C 1000 tompson",p:null},
+  {n:"Chromium Thompson",p:null},
+  {n:"Citicholine 1gm",p:null},
+  {n:"Copper Glycinate",p:null},
+  {n:"Copper Natuers Plus",p:null},
+  {n:"Copper Solary",p:null},
+  {n:"Daily Amino Acid",p:null},
+  {n:"Doliprane",p:null},
+  {n:"Dopa Mucuna 90 caps",p:null},
+  {n:"Foncitril",p:null},
+  {n:"Gastro Comfort",p:null},
+  {n:"Glucomannan Caps",p:null},
+  {n:"Glucomannan Powder",p:null},
+  {n:"Hair Skin and Nails 50",p:null},
+  {n:"Hair Skin and Nails 90",p:null},
+  {n:"Hema plex 60",p:null},
+  {n:"Hemafer Syrup",p:null},
+  {n:"Hemafer vials",p:null},
+  {n:"Lime oil 30 ml",p:null},
+  {n:"Liquid D3 59ml 400iu",p:null},
+  {n:"Magnesium Caps",p:null},
+  {n:"Magnesium Glycinate Gummies",p:null},
+  {n:"Magnesium orotate KAL",p:null},
+  {n:"Manuka Honey",p:null},
+  {n:"Magnesium Glycinate Gummies",p:null},
+  {n:"Nutri-Serra",p:null},
+  {n:"Oregano oil",p:null},
+  {n:"P-5-P 50mg 90caps",p:null},
+  {n:"Panax Ginseng",p:null},
+  {n:"Prenatal",p:null},
+  {n:"Probiotic Complex",p:null},
+  {n:"Riboflavin B2 Natures Way",p:null},
+  {n:"Royal Jelly",p:null},
+  {n:"Selenium Futurebiotic",p:null},
+  {n:"Selenium Sprin Vally 200",p:null},
+  {n:"Serrapeptase Lake Avenue",p:null},
+  {n:"Thyroid Energy",p:null},
+  {n:"Unigesic",p:null},
+  {n:"Vitamin E Nature Wise",p:null},
+  {n:"Water Out",p:null},
+  {n:"Xyli white charcoal",p:null},
+  {n:"Xyli white green refreshment",p:null},
+  {n:"Zinc Picolinate 50 mg",p:null},
+  {n:"Zoo Multi Kids",p:null}
 ];
 
-let cart = []; // { name, price (from product), qty, customPrice }
+// Deduplicate by name (case-insensitive)
+(function(){
+  var seen={};
+  P=P.filter(function(x){
+    var k=x.n.toLowerCase();
+    if(seen[k]) return false;
+    seen[k]=1;
+    return true;
+  });
+  // Sort each brand group A-Z
+  P.sort(function(a,b){return a.n.toLowerCase()<b.n.toLowerCase()?-1:1});
+})();
 
-/* Set default date to today */
-const today = new Date();
-document.getElementById('invoiceDate').value = today.toISOString().split('T')[0];
+// Brand detection
+var BRANDS=['All','NOW','Puritans','Mason','Swanson','Nutricost','Century','Natrol',"Nature's Truth","Nature's Bounty",'Centrum',"Doctor's Best",'Sundance','Other'];
+function getBrand(n){
+  var l=n.toLowerCase();
+  if(l.includes('puritans')) return 'Puritans';
+  if(l.includes('swanson')) return 'Swanson';
+  if(l.includes('mason') || l.includes('masnon')) return 'Mason';
+  if(l.includes('nutricost')) return 'Nutricost';
+  if(l.includes('century') || l.includes('cenutry') || l.includes('centruy')) return 'Century';
+  if(l.includes('natrol')) return 'Natrol';
+  if(l.includes('natures truth') || l.includes('nautres truth') || l.includes('natures truth')) return "Nature's Truth";
+  if(l.includes('natures bounty')) return "Nature's Bounty";
+  if(l.includes('centrum')) return 'Centrum';
+  if(l.includes('doctors best') || l.includes('docotrs') || l.includes('doctures')) return "Doctor's Best";
+  if(l.includes('sundance')) return 'Sundance';
+  if(l.includes('now')) return 'NOW';
+  return 'Other';
+}
 
-/* ── RENDER PRODUCT LIST ── */
-function renderProducts() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  const filtered = q
-    ? PRODUCTS.filter(p => p.name.toLowerCase().includes(q))
-    : PRODUCTS;
-  const list = document.getElementById('productList');
-  if (!filtered.length) {
-    list.innerHTML = '<div class="no-results">No products found</div>';
-    return;
-  }
-  list.innerHTML = filtered.map((p, _) => {
-    const inCart = cart.some(c => c.name === p.name);
-    const priceTag = p.price != null
-      ? `<span class="product-price-tag">IQD ${p.price.toLocaleString()}</span>`
-      : `<span class="product-price-tag no-price">Price needed</span>`;
-    return `
-      <div class="product-item ${inCart ? 'already-added' : ''}" onclick="addToCart('${escapeName(p.name)}')">
-        <span class="product-name">${p.name}</span>
-        ${priceTag}
-        <div class="add-btn">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path d="M12 5v14M5 12h14"/>
-          </svg>
-        </div>
-      </div>`;
+var cart=[];
+var activeBrand='All';
+
+// Default date
+var t=new Date();
+document.getElementById('idate').value=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+
+// ── CHIPS
+function renderChips(){
+  var el=document.getElementById('chips');
+  el.innerHTML=BRANDS.map(function(b){
+    return '<button class="chip'+(activeBrand===b?' active':'')+'" data-brand="'+esc(b)+'">'+esc(b)+'</button>';
   }).join('');
 }
-
-function escapeName(name) {
-  return name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-}
-
-document.getElementById('searchInput').addEventListener('input', renderProducts);
-
-/* ── ADD TO CART ── */
-function addToCart(name) {
-  if (cart.some(c => c.name === name)) return;
-  const prod = PRODUCTS.find(p => p.name === name);
-  cart.push({ name: prod.name, basePrice: prod.price, qty: 1, customPrice: prod.price != null ? prod.price : '' });
-  renderCart();
-  renderProducts();
-  updateTotal();
-}
-
-/* ── REMOVE FROM CART ── */
-function removeFromCart(name) {
-  cart = cart.filter(c => c.name !== name);
-  renderCart();
-  renderProducts();
-  updateTotal();
-}
-
-/* ── QTY CHANGE ── */
-function updateQty(name, val) {
-  const item = cart.find(c => c.name === name);
-  if (!item) return;
-  item.qty = Math.max(1, parseInt(val) || 1);
-  updateSubtotal(name);
-  updateTotal();
-}
-
-/* ── PRICE CHANGE ── */
-function updatePrice(name, val) {
-  const item = cart.find(c => c.name === name);
-  if (!item) return;
-  item.customPrice = val === '' ? '' : parseFloat(val) || '';
-  updateSubtotal(name);
-  updateTotal();
-}
-
-function updateSubtotal(name) {
-  const item = cart.find(c => c.name === name);
-  if (!item) return;
-  const el = document.getElementById('sub_' + btoa(name).replace(/=/g,''));
-  if (!el) return;
-  const p = item.customPrice;
-  if (p === '' || p == null) {
-    el.innerHTML = '<span style="color:#ff9500">Price missing</span>';
-  } else {
-    el.innerHTML = `Subtotal: <strong>IQD ${(p * item.qty).toLocaleString()}</strong>`;
+document.getElementById('chips').addEventListener('click',function(e){
+  var btn=e.target;
+  if(btn.classList.contains('chip')){
+    activeBrand=btn.getAttribute('data-brand');
+    renderChips();
+    renderProducts();
   }
-}
+});
 
-/* ── RENDER CART ── */
-function renderCart() {
-  const el = document.getElementById('cartList');
-  if (!cart.length) {
-    el.innerHTML = '<div class="cart-empty"><span>🛒</span>Tap a product above to add it</div>';
-    return;
-  }
-  el.innerHTML = cart.map(item => {
-    const key = btoa(item.name).replace(/=/g,'');
-    const isMissing = item.basePrice == null;
-    const priceVal = item.customPrice === '' ? '' : item.customPrice;
-    const subText = priceVal !== '' && priceVal != null
-      ? `Subtotal: <strong>IQD ${(priceVal * item.qty).toLocaleString()}</strong>`
-      : `<span style="color:#ff9500">Price missing</span>`;
-    return `
-      <div class="cart-item">
-        <div class="cart-item-top">
-          <span class="cart-item-name">${item.name}</span>
-          <button class="remove-btn" onclick="removeFromCart('${escapeName(item.name)}')">
-            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path d="M18 6 6 18M6 6l12 12"/>
-            </svg>
-          </button>
-        </div>
-        <div class="cart-item-controls">
-          <div class="control-group">
-            <label>Qty</label>
-            <input class="qty-input" type="number" min="1" value="${item.qty}"
-              inputmode="numeric"
-              onchange="updateQty('${escapeName(item.name)}', this.value)"
-              oninput="updateQty('${escapeName(item.name)}', this.value)">
-          </div>
-          <div class="control-group">
-            <label>Unit Price (IQD)</label>
-            <input class="price-input ${isMissing ? 'missing' : ''}" type="number" min="0"
-              inputmode="decimal"
-              placeholder="${isMissing ? 'Enter price…' : ''}"
-              value="${priceVal}"
-              onchange="updatePrice('${escapeName(item.name)}', this.value)"
-              oninput="updatePrice('${escapeName(item.name)}', this.value)">
-            ${isMissing ? '<div class="missing-label">⚠️ Price not in sheet</div>' : ''}
-          </div>
-        </div>
-        <div class="item-subtotal" id="sub_${key}">${subText}</div>
-      </div>`;
+// ── PRODUCTS
+function renderProducts(){
+  var q=document.getElementById('srch').value.toLowerCase().trim();
+  var el=document.getElementById('plist');
+  var inCartNames={};
+  cart.forEach(function(c){inCartNames[c.n.toLowerCase()]=1;});
+  var filtered=P.filter(function(x){
+    if(q && x.n.toLowerCase().indexOf(q)===-1) return false;
+    if(!q && activeBrand!=='All' && getBrand(x.n)!==activeBrand) return false;
+    return true;
+  });
+  if(!filtered.length){el.innerHTML='<div class="nores">No products found</div>';return;}
+  el.innerHTML=filtered.map(function(x,i){
+    var ic=inCartNames[x.n.toLowerCase()]?1:0;
+    var ptag=x.p!=null?'<span class="ptag has">IQD '+x.p.toLocaleString()+'</span>':'<span class="ptag no">Price needed</span>';
+    return '<div class="pitem'+(ic?' ic':'')+'" data-idx="'+P.indexOf(x)+'">'+
+      '<span class="pname">'+esc(x.n)+'</span>'+ptag+
+      '<div class="addcircle"><svg width="13" height="13" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>'+
+      '</div>';
   }).join('');
 }
+document.getElementById('plist').addEventListener('click',function(e){
+  var el=e.target;
+  while(el&&el!==this){
+    if(el.classList.contains('pitem')){addToCart(parseInt(el.getAttribute('data-idx'),10));return;}
+    el=el.parentElement;
+  }
+});
 
-/* ── UPDATE TOTAL ── */
-function updateTotal() {
-  let total = 0;
-  let hasMissing = false;
-  cart.forEach(item => {
-    if (item.customPrice !== '' && item.customPrice != null) {
-      total += parseFloat(item.customPrice) * item.qty;
-    } else {
-      hasMissing = true;
-    }
-  });
-  document.getElementById('totalAmount').textContent = 'IQD ' + total.toLocaleString();
-  document.getElementById('missingNote').style.display = hasMissing ? 'block' : 'none';
+// ── SEARCH
+document.getElementById('srch').addEventListener('input',function(){
+  document.getElementById('clrbtn').style.display=this.value?'block':'none';
+  renderProducts();
+});
+document.getElementById('clrbtn').addEventListener('click',function(){
+  document.getElementById('srch').value='';
+  this.style.display='none';
+  renderProducts();
+});
+
+// ── CART
+function addToCart(idx){
+  var prod=P[idx];
+  if(!prod||cart.some(function(c){return c.n===prod.n;})) return;
+  cart.push({n:prod.n,base:prod.p,qty:1,cp:prod.p});
+  renderCart();renderProducts();updateTotal();
+}
+function removeFromCart(ci){
+  cart.splice(ci,1);
+  renderCart();renderProducts();updateTotal();
+}
+function renderCart(){
+  var el=document.getElementById('clist');
+  if(!cart.length){el.innerHTML='<div class="cempty"><div class="cempty-icon">🛒</div>Tap a product above to add it</div>';return;}
+  el.innerHTML=cart.map(function(item,ci){
+    var missing=item.base==null;
+    var pv=item.cp!=null?item.cp:'';
+    var sub=(pv!==''&&pv!=null)?'Subtotal: <b>IQD '+(item.cp*item.qty).toLocaleString()+'</b>':'<span style="color:#ff9500">Price missing</span>';
+    return '<div class="citem">'+
+      '<div class="ctop"><span class="cname">'+esc(item.n)+'</span>'+
+      '<button class="rmbtn" data-action="rm" data-ci="'+ci+'" type="button"><svg width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>'+
+      '<div class="ctrls">'+
+      '<div class="ctrl"><label>Qty</label>'+
+      '<input type="number" inputmode="numeric" min="1" value="'+item.qty+'" data-action="qty" data-ci="'+ci+'"></div>'+
+      '<div class="ctrl"><label>Unit Price (IQD)</label>'+
+      '<input type="number" inputmode="decimal" min="0" placeholder="'+(missing?'Enter price…':'')+'" value="'+(pv!==''?pv:'')+'" class="'+(missing?'np':'')+'" data-action="price" data-ci="'+ci+'">'+
+      (missing?'<div class="nlbl">⚠️ Not in sheet</div>':'')+
+      '</div></div>'+
+      '<div class="sub" id="sub'+ci+'">'+sub+'</div>'+
+      '</div>';
+  }).join('');
+}
+document.getElementById('clist').addEventListener('click',function(e){
+  var btn=e.target;
+  while(btn&&btn!==this){
+    if(btn.getAttribute('data-action')==='rm'){removeFromCart(parseInt(btn.getAttribute('data-ci'),10));return;}
+    btn=btn.parentElement;
+  }
+});
+document.getElementById('clist').addEventListener('input',function(e){
+  var inp=e.target,a=inp.getAttribute('data-action'),ci=parseInt(inp.getAttribute('data-ci'),10);
+  if(isNaN(ci)) return;
+  if(a==='qty'){cart[ci].qty=Math.max(1,parseInt(inp.value,10)||1);}
+  else if(a==='price'){var v=inp.value.trim();cart[ci].cp=v===''?null:parseFloat(v);}
+  refreshSub(ci);updateTotal();
+});
+function refreshSub(ci){
+  var el=document.getElementById('sub'+ci);if(!el) return;
+  var item=cart[ci];
+  el.innerHTML=(item.cp!=null&&item.cp!=='')?'Subtotal: <b>IQD '+(item.cp*item.qty).toLocaleString()+'</b>':'<span style="color:#ff9500">Price missing</span>';
+}
+function updateTotal(){
+  var tot=0,miss=false;
+  cart.forEach(function(c){c.cp!=null?tot+=c.cp*c.qty:miss=true;});
+  document.getElementById('tamt').textContent='IQD '+tot.toLocaleString();
+  document.getElementById('mnote').style.display=miss?'block':'none';
 }
 
-/* ── EXPORT CSV ── */
-function exportCSV() {
-  const customer = document.getElementById('customerName').value.trim();
-  const date = document.getElementById('invoiceDate').value;
+// ── EXPORT
+document.getElementById('expbtn').addEventListener('click',function(){
+  var cn=document.getElementById('cname').value.trim();
+  var dt=document.getElementById('idate').value;
+  if(!cn){alert('Please enter a customer name.');document.getElementById('cname').focus();return;}
+  if(!dt){alert('Please select a date.');return;}
+  if(!cart.length){alert('Please add at least one product.');return;}
+  if(cart.some(function(c){return c.cp==null;})){if(!confirm('Some items are missing a price. Export anyway?')) return;}
 
-  if (!customer) {
-    alert('Please enter a customer name first.');
-    document.getElementById('customerName').focus();
-    return;
-  }
-  if (!date) {
-    alert('Please select an invoice date.');
-    return;
-  }
-  if (!cart.length) {
-    alert('Please add at least one product.');
-    return;
-  }
-
-  const hasMissing = cart.some(item => item.customPrice === '' || item.customPrice == null);
-  if (hasMissing) {
-    const ok = confirm('Some items are missing a price. Continue exporting anyway?');
-    if (!ok) return;
-  }
-
-  const rows = [['Customer Name', 'Date', 'Item', 'Quantity', 'Unit Price (IQD)', 'Total Price (IQD)']];
-  cart.forEach(item => {
-    const unitPrice = (item.customPrice !== '' && item.customPrice != null) ? item.customPrice : '';
-    const totalPrice = unitPrice !== '' ? (parseFloat(unitPrice) * item.qty) : '';
-    rows.push([
-      customer,
-      date,
-      item.name,
-      item.qty,
-      unitPrice,
-      totalPrice
-    ]);
+  var rows=[['Customer Name','Date','Product Name','Unit Price (IQD)','Quantity','Total (IQD)']];
+  cart.forEach(function(item){
+    var up=item.cp!=null?item.cp:'';
+    var tot=up!==''?(parseFloat(up)*item.qty):'';
+    rows.push([cn,dt,item.n,up,item.qty,tot]);
   });
+  var csv=rows.map(function(r){
+    return r.map(function(c){
+      var s=String(c);
+      return(s.indexOf(',')>=0||s.indexOf('"')>=0||s.indexOf('\n')>=0)?'"'+s.replace(/"/g,'""')+'"':s;
+    }).join(',');
+  }).join('\n');
 
-  const csvContent = rows.map(row =>
-    row.map(cell => {
-      const str = String(cell);
-      return str.includes(',') || str.includes('"') || str.includes('\n')
-        ? '"' + str.replace(/"/g, '""') + '"'
-        : str;
-    }).join(',')
-  ).join('\n');
+  // Try download (desktop/Android)
+  var done=false;
+  try{
+    var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;a.download='invoice_'+cn.replace(/\s+/g,'_')+'_'+dt+'.csv';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(url);},1000);
+    done=true;
+  }catch(e){done=false;}
 
-  const blob = new Blob(['﻿' + csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `invoice_${customer.replace(/\s+/g,'_')}_${date}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  if(isIOS||!done){
+    document.getElementById('csvbox').textContent=csv;
+    document.getElementById('copybtn').textContent='Copy CSV';
+    document.getElementById('copybtn').className='copybtn';
+    document.getElementById('moverlay').classList.add('open');
+  }
+
+  // Clear form
+  document.getElementById('cname').value='';
+  var t2=new Date();
+  document.getElementById('idate').value=t2.getFullYear()+'-'+String(t2.getMonth()+1).padStart(2,'0')+'-'+String(t2.getDate()).padStart(2,'0');
+  cart=[];renderCart();renderProducts();updateTotal();
+});
+
+// ── MODAL
+document.getElementById('copybtn').addEventListener('click',function(){
+  var txt=document.getElementById('csvbox').textContent;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){
+      document.getElementById('copybtn').textContent='✓ Copied!';
+      document.getElementById('copybtn').className='copybtn done';
+    }).catch(function(){fbCopy(txt);});
+  } else {fbCopy(txt);}
+});
+function fbCopy(text){
+  var ta=document.createElement('textarea');
+  ta.value=text;ta.style.cssText='position:fixed;left:-9999px;top:-9999px;';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand('copy');
+    document.getElementById('copybtn').textContent='✓ Copied!';
+    document.getElementById('copybtn').className='copybtn done';
+  }catch(e){alert('Long-press the text above → Select All → Copy.');}
+  document.body.removeChild(ta);
 }
+document.getElementById('closebtn').addEventListener('click',function(){document.getElementById('moverlay').classList.remove('open');});
+document.getElementById('moverlay').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
 
-/* ── INIT ── */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ── INIT
+renderChips();
 renderProducts();
 </script>
 </body>
