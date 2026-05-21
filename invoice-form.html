@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Invoice Form</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f2f2f7;
+    color: #1c1c1e;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* ── TOP HEADER ── */
+  .top-header {
+    background: #fff;
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid #e5e5ea;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .top-header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #007aff;
+    margin-bottom: 12px;
+    letter-spacing: -0.3px;
+  }
+  .fields-row {
+    display: flex;
+    gap: 10px;
+  }
+  .field-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .field-group label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8e8e93;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .field-group input {
+    height: 42px;
+    border: 1.5px solid #e5e5ea;
+    border-radius: 10px;
+    padding: 0 12px;
+    font-size: 15px;
+    color: #1c1c1e;
+    background: #f9f9fb;
+    outline: none;
+    width: 100%;
+    -webkit-appearance: none;
+  }
+  .field-group input:focus {
+    border-color: #007aff;
+    background: #fff;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #8e8e93;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px 16px 6px;
+  }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    padding: 0 16px 8px;
+  }
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: #e9e9ef;
+    border-radius: 10px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .search-box svg { flex-shrink: 0; color: #8e8e93; }
+  .search-box input {
+    flex: 1;
+    height: 38px;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    color: #1c1c1e;
+    outline: none;
+  }
+  .search-box input::placeholder { color: #8e8e93; }
+
+  /* ── PRODUCT LIST ── */
+  .product-list {
+    background: #fff;
+    border-radius: 12px;
+    margin: 0 16px;
+    overflow: hidden;
+    border: 1px solid #e5e5ea;
+    max-height: 260px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .product-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 16px;
+    border-bottom: 1px solid #f2f2f7;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.1s;
+    gap: 8px;
+  }
+  .product-item:last-child { border-bottom: none; }
+  .product-item:active { background: #f2f2f7; }
+  .product-item.already-added { opacity: 0.4; pointer-events: none; }
+  .product-name {
+    font-size: 15px;
+    color: #1c1c1e;
+    line-height: 1.3;
+    flex: 1;
+  }
+  .product-price-tag {
+    font-size: 13px;
+    color: #34c759;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .product-price-tag.no-price {
+    color: #ff9500;
+    font-size: 12px;
+  }
+  .add-btn {
+    width: 28px;
+    height: 28px;
+    background: #007aff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .add-btn svg { color: #fff; }
+  .no-results {
+    padding: 24px 16px;
+    text-align: center;
+    color: #8e8e93;
+    font-size: 15px;
+  }
+
+  /* ── CART ── */
+  .cart-list {
+    background: #fff;
+    border-radius: 12px;
+    margin: 0 16px;
+    overflow: hidden;
+    border: 1px solid #e5e5ea;
+  }
+  .cart-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f2f2f7;
+  }
+  .cart-item:last-child { border-bottom: none; }
+  .cart-item-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .cart-item-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1c1c1e;
+    line-height: 1.3;
+    flex: 1;
+  }
+  .remove-btn {
+    width: 26px;
+    height: 26px;
+    background: #ff3b30;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    border: none;
+    margin-top: 1px;
+  }
+  .remove-btn svg { color: #fff; }
+  .cart-item-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .control-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .control-group label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8e8e93;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .qty-input, .price-input {
+    height: 40px;
+    border: 1.5px solid #e5e5ea;
+    border-radius: 9px;
+    padding: 0 10px;
+    font-size: 16px;
+    color: #1c1c1e;
+    background: #f9f9fb;
+    outline: none;
+    width: 100%;
+    -webkit-appearance: none;
+  }
+  .qty-input:focus, .price-input:focus {
+    border-color: #007aff;
+    background: #fff;
+  }
+  .price-input.missing {
+    border-color: #ff9500;
+    background: #fff9f0;
+  }
+  .price-input.missing:focus { border-color: #ff9500; }
+  .item-subtotal {
+    font-size: 13px;
+    color: #8e8e93;
+    text-align: right;
+    margin-top: 6px;
+  }
+  .item-subtotal strong { color: #1c1c1e; }
+  .missing-label {
+    font-size: 11px;
+    color: #ff9500;
+    margin-top: 2px;
+  }
+
+  .cart-empty {
+    padding: 28px 16px;
+    text-align: center;
+    color: #8e8e93;
+    font-size: 15px;
+  }
+  .cart-empty span { display: block; font-size: 28px; margin-bottom: 6px; }
+
+  /* ── TOTAL BAR ── */
+  .total-bar {
+    background: #fff;
+    border-radius: 12px;
+    margin: 0 16px;
+    padding: 14px 16px;
+    border: 1px solid #e5e5ea;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .total-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1c1c1e;
+  }
+  .total-amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: #007aff;
+  }
+  .missing-prices-note {
+    font-size: 12px;
+    color: #ff9500;
+    padding: 4px 16px 0;
+  }
+
+  /* ── EXPORT BUTTON ── */
+  .export-btn {
+    display: block;
+    width: calc(100% - 32px);
+    margin: 0 16px;
+    height: 52px;
+    background: #007aff;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-appearance: none;
+    transition: opacity 0.15s;
+  }
+  .export-btn:active { opacity: 0.8; }
+  .export-btn:disabled {
+    background: #c7c7cc;
+    cursor: not-allowed;
+  }
+
+  .gap { height: 12px; }
+  .gap-sm { height: 8px; }
+</style>
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<div class="top-header">
+  <h1>🧾 Invoice</h1>
+  <div class="fields-row">
+    <div class="field-group">
+      <label>Customer Name</label>
+      <input type="text" id="customerName" placeholder="Enter name" autocomplete="off" autocorrect="off">
+    </div>
+    <div class="field-group">
+      <label>Date</label>
+      <input type="date" id="invoiceDate">
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT SEARCH -->
+<div class="section-label">Add Products</div>
+<div class="search-wrap">
+  <div class="search-box">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input type="search" id="searchInput" placeholder="Search products…" autocomplete="off" autocorrect="off" autocapitalize="off">
+  </div>
+</div>
+<div class="product-list" id="productList"></div>
+
+<div class="gap"></div>
+
+<!-- CART -->
+<div class="section-label">Invoice Items</div>
+<div class="cart-list" id="cartList">
+  <div class="cart-empty"><span>🛒</span>Tap a product above to add it</div>
+</div>
+
+<div class="gap"></div>
+
+<!-- TOTAL -->
+<div class="total-bar">
+  <span class="total-label">Total</span>
+  <span class="total-amount" id="totalAmount">IQD 0</span>
+</div>
+<div id="missingNote" class="missing-prices-note" style="display:none">
+  ⚠️ Some items have no price — total may be incomplete
+</div>
+
+<div class="gap"></div>
+
+<!-- EXPORT -->
+<button class="export-btn" id="exportBtn" onclick="exportCSV()">Export CSV</button>
+
+<div class="gap"></div>
+
+<script>
+const PRODUCTS = [
+  { name: "5-HTP 100 mg Now 60 caps",              price: 18000 },
+  { name: "5-HTP 50 mg Now 30 caps",               price: 12300 },
+  { name: "B-1 100 mg Now",                        price: 17500 },
+  { name: "B-12 Now",                              price: 13500 },
+  { name: "Berberine 90 SG",                       price: null  },
+  { name: "Berberine Now 90 SG",                   price: 41500 },
+  { name: "Biotin 10,000 Now",                     price: null  },
+  { name: "C-1000 now",                            price: 13000 },
+  { name: "C-1000 Now Buffered complex 90 tablets",price: 27500 },
+  { name: "Glutathione 500 mg Now",                price: null  },
+  { name: "GTF Chromium 200 mcg 100 tabs",         price: 14500 },
+  { name: "L-Arginine 1000 mg Now",                price: 33000 },
+  { name: "L-Arginine 500 Now",                    price: 17500 },
+  { name: "L-Carnitine 1000 mg Now",               price: 28500 },
+  { name: "L-Lysine Now",                          price: null  },
+  { name: "Magnesium Glycinate 60 caps Now",       price: 23500 },
+  { name: "Magnesium Malate 1000 Now 100 tabs",    price: 37500 },
+  { name: "Mega D-3 & MK-7 Now",                  price: 25000 },
+  { name: "Melatonin 3mg Now 60 caps",             price: 11000 },
+  { name: "MK7 K2 Now 100mcg 60 caps",             price: 22000 },
+  { name: "Potassium Gluconate 99 mg Now",         price: null  },
+  { name: "Probiotic-10 25 Billion Now",           price: 21000 },
+  { name: "Selenium 100 mcg Now",                  price: null  },
+  { name: "Selenium 200 Now",                      price: 14600 },
+  { name: "Super Enzymes Now",                     price: 24700 },
+  { name: "Super Primrose 1300 mg Now",            price: 24000 },
+  { name: "Tri-Chromium Now",                      price: null  },
+  { name: "Turmeric Curcumin Now",                 price: 29500 },
+  { name: "Vitamin D-3 & K-2 now",                price: 18000 },
+  { name: "Vitamin K-2 Now",                      price: null  },
+  { name: "Zinc 50 mg Now",                        price: 13000 },
+  { name: "Zinc Picolinate 50 mg",                 price: null  },
+  { name: "Zinc Picolinate Now",                   price: 11000 },
+];
+
+let cart = []; // { name, price (from product), qty, customPrice }
+
+/* Set default date to today */
+const today = new Date();
+document.getElementById('invoiceDate').value = today.toISOString().split('T')[0];
+
+/* ── RENDER PRODUCT LIST ── */
+function renderProducts() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const filtered = q
+    ? PRODUCTS.filter(p => p.name.toLowerCase().includes(q))
+    : PRODUCTS;
+  const list = document.getElementById('productList');
+  if (!filtered.length) {
+    list.innerHTML = '<div class="no-results">No products found</div>';
+    return;
+  }
+  list.innerHTML = filtered.map((p, _) => {
+    const inCart = cart.some(c => c.name === p.name);
+    const priceTag = p.price != null
+      ? `<span class="product-price-tag">IQD ${p.price.toLocaleString()}</span>`
+      : `<span class="product-price-tag no-price">Price needed</span>`;
+    return `
+      <div class="product-item ${inCart ? 'already-added' : ''}" onclick="addToCart('${escapeName(p.name)}')">
+        <span class="product-name">${p.name}</span>
+        ${priceTag}
+        <div class="add-btn">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function escapeName(name) {
+  return name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+document.getElementById('searchInput').addEventListener('input', renderProducts);
+
+/* ── ADD TO CART ── */
+function addToCart(name) {
+  if (cart.some(c => c.name === name)) return;
+  const prod = PRODUCTS.find(p => p.name === name);
+  cart.push({ name: prod.name, basePrice: prod.price, qty: 1, customPrice: prod.price != null ? prod.price : '' });
+  renderCart();
+  renderProducts();
+  updateTotal();
+}
+
+/* ── REMOVE FROM CART ── */
+function removeFromCart(name) {
+  cart = cart.filter(c => c.name !== name);
+  renderCart();
+  renderProducts();
+  updateTotal();
+}
+
+/* ── QTY CHANGE ── */
+function updateQty(name, val) {
+  const item = cart.find(c => c.name === name);
+  if (!item) return;
+  item.qty = Math.max(1, parseInt(val) || 1);
+  updateSubtotal(name);
+  updateTotal();
+}
+
+/* ── PRICE CHANGE ── */
+function updatePrice(name, val) {
+  const item = cart.find(c => c.name === name);
+  if (!item) return;
+  item.customPrice = val === '' ? '' : parseFloat(val) || '';
+  updateSubtotal(name);
+  updateTotal();
+}
+
+function updateSubtotal(name) {
+  const item = cart.find(c => c.name === name);
+  if (!item) return;
+  const el = document.getElementById('sub_' + btoa(name).replace(/=/g,''));
+  if (!el) return;
+  const p = item.customPrice;
+  if (p === '' || p == null) {
+    el.innerHTML = '<span style="color:#ff9500">Price missing</span>';
+  } else {
+    el.innerHTML = `Subtotal: <strong>IQD ${(p * item.qty).toLocaleString()}</strong>`;
+  }
+}
+
+/* ── RENDER CART ── */
+function renderCart() {
+  const el = document.getElementById('cartList');
+  if (!cart.length) {
+    el.innerHTML = '<div class="cart-empty"><span>🛒</span>Tap a product above to add it</div>';
+    return;
+  }
+  el.innerHTML = cart.map(item => {
+    const key = btoa(item.name).replace(/=/g,'');
+    const isMissing = item.basePrice == null;
+    const priceVal = item.customPrice === '' ? '' : item.customPrice;
+    const subText = priceVal !== '' && priceVal != null
+      ? `Subtotal: <strong>IQD ${(priceVal * item.qty).toLocaleString()}</strong>`
+      : `<span style="color:#ff9500">Price missing</span>`;
+    return `
+      <div class="cart-item">
+        <div class="cart-item-top">
+          <span class="cart-item-name">${item.name}</span>
+          <button class="remove-btn" onclick="removeFromCart('${escapeName(item.name)}')">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <div class="cart-item-controls">
+          <div class="control-group">
+            <label>Qty</label>
+            <input class="qty-input" type="number" min="1" value="${item.qty}"
+              inputmode="numeric"
+              onchange="updateQty('${escapeName(item.name)}', this.value)"
+              oninput="updateQty('${escapeName(item.name)}', this.value)">
+          </div>
+          <div class="control-group">
+            <label>Unit Price (IQD)</label>
+            <input class="price-input ${isMissing ? 'missing' : ''}" type="number" min="0"
+              inputmode="decimal"
+              placeholder="${isMissing ? 'Enter price…' : ''}"
+              value="${priceVal}"
+              onchange="updatePrice('${escapeName(item.name)}', this.value)"
+              oninput="updatePrice('${escapeName(item.name)}', this.value)">
+            ${isMissing ? '<div class="missing-label">⚠️ Price not in sheet</div>' : ''}
+          </div>
+        </div>
+        <div class="item-subtotal" id="sub_${key}">${subText}</div>
+      </div>`;
+  }).join('');
+}
+
+/* ── UPDATE TOTAL ── */
+function updateTotal() {
+  let total = 0;
+  let hasMissing = false;
+  cart.forEach(item => {
+    if (item.customPrice !== '' && item.customPrice != null) {
+      total += parseFloat(item.customPrice) * item.qty;
+    } else {
+      hasMissing = true;
+    }
+  });
+  document.getElementById('totalAmount').textContent = 'IQD ' + total.toLocaleString();
+  document.getElementById('missingNote').style.display = hasMissing ? 'block' : 'none';
+}
+
+/* ── EXPORT CSV ── */
+function exportCSV() {
+  const customer = document.getElementById('customerName').value.trim();
+  const date = document.getElementById('invoiceDate').value;
+
+  if (!customer) {
+    alert('Please enter a customer name first.');
+    document.getElementById('customerName').focus();
+    return;
+  }
+  if (!date) {
+    alert('Please select an invoice date.');
+    return;
+  }
+  if (!cart.length) {
+    alert('Please add at least one product.');
+    return;
+  }
+
+  const hasMissing = cart.some(item => item.customPrice === '' || item.customPrice == null);
+  if (hasMissing) {
+    const ok = confirm('Some items are missing a price. Continue exporting anyway?');
+    if (!ok) return;
+  }
+
+  const rows = [['Customer Name', 'Date', 'Item', 'Quantity', 'Unit Price (IQD)', 'Total Price (IQD)']];
+  cart.forEach(item => {
+    const unitPrice = (item.customPrice !== '' && item.customPrice != null) ? item.customPrice : '';
+    const totalPrice = unitPrice !== '' ? (parseFloat(unitPrice) * item.qty) : '';
+    rows.push([
+      customer,
+      date,
+      item.name,
+      item.qty,
+      unitPrice,
+      totalPrice
+    ]);
+  });
+
+  const csvContent = rows.map(row =>
+    row.map(cell => {
+      const str = String(cell);
+      return str.includes(',') || str.includes('"') || str.includes('\n')
+        ? '"' + str.replace(/"/g, '""') + '"'
+        : str;
+    }).join(',')
+  ).join('\n');
+
+  const blob = new Blob(['﻿' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `invoice_${customer.replace(/\s+/g,'_')}_${date}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ── INIT ── */
+renderProducts();
+</script>
+</body>
+</html>
